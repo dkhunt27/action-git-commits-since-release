@@ -56,8 +56,8 @@ export const run = async (): Promise<{
     throw setFailedAndCreateError(errMsg)
   }
 
-  const base = commits[0]
-  const head = commits[commits.length - 1]
+  const base = commits[commits.length - 1]
+  const head = commits[0]
   core.info(`Base commit: ${base}`)
   core.info(`Head commit: ${head}`)
 

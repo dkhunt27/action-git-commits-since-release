@@ -20,10 +20,6 @@ export const executeCommand = async (params: {
         core.info(`Command failed`)
         core.error(error)
         return reject(stderr)
-      } else if (stderr) {
-        core.info(`Command had stderr output`)
-        core.error(stderr)
-        return reject(stderr)
       }
 
       core.info(`Command succeeded`)
