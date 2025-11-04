@@ -67,6 +67,7 @@ export const run = async (): Promise<{
   core.setOutput('base', base)
   core.setOutput('head', head)
 
+  // dummy
   return {
     latestTag,
     commits,
