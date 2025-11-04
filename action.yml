@@ -8,58 +8,7 @@ branding:
 
 # Define your inputs here.
 inputs:
-  command:
-    description: 'NX command to run'
-    required: true
-    options:
-      - 'runManyListedTargetsAndAllProjects'
-      - 'runManyListedTargetsAndListedProjects'
-      - 'runManyListedTargetsAndAffectedProjects'
-      - 'showAffectedList'
-
-  affectedToIgnore:
-    description:
-      'Command: showAffectedList -- Projects to ignore (comma-separated)'
-    required: false
-    default: ''
-  args:
-    description: 'Optional arguments to append to the Nx command'
-    required: false
-    default: ''
-  baseBoundaryOverride:
-    description:
-      'Command: targetedAffected, showAffectedList -- Parameter to use for
-      overriding nx base commit'
-    required: false
-  headBoundaryOverride:
-    description:
-      'Command: targetedAffected, showAffectedList -- Parameter to use for
-      overriding nx head commit'
-    required: false
-  isWorkflowsCiPipeline:
-    description:
-      'DO NOT USE: Flag to indicate if `.github/workflows/ci.yml` is being
-      executed '
-    required: false
-  projects:
-    description:
-      'Command: targetedProjects -- Comma-separated list of projects to pass to
-      nx command'
-    required: false
-  setNxBranchToPrNumber:
-    description:
-      'Set the NX_BRANCH environment variable to the pull request number'
-    required: false
-  targets:
-    description:
-      'Command: targeted* (required), showAffectedList(optional) --
-      Comma-separated list of targets to execute'
-    required: false
-    default: ''
-  workingDirectory:
-    description: 'Path to the Nx workspace, needed if not the repository root'
-    required: false
 
 runs:
-  using: node20
+  using: node24
   main: dist/index.js

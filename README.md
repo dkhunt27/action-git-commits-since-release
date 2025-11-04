@@ -15,8 +15,6 @@ projects. This behavior can be modified using the different inputs (see below).
   uses: actions/checkout@v5
 
 - uses: dkhunt27/action-git-commits-since-release@v1
-  with:
-    foo: bar
 ```
 
 ## Test your action locally
