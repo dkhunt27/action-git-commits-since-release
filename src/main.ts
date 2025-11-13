@@ -8,9 +8,11 @@ const setFailedAndCreateError = (message: string): Error => {
 
 export const run = async (): Promise<{
   latestTag: string
-  commits: string[]
-  base: string
-  head: string
+  commitsInLatestRelease: string[]
+  commitsSinceLatestRelease: string[]
+  headOfLatestRelease: string
+  baseSinceLatestRelease: string
+  headSinceLatestRelease: string
 }> => {
   try {
     core.info('Fetching all git tags...')
@@ -38,39 +40,73 @@ export const run = async (): Promise<{
   const latestTag = tags[0]
   core.info(`Latest tag found: ${latestTag}`)
 
-  let commits: string[] = []
+  let commitsInLatestRelease: string[] = []
   try {
-    core.info('Listing git tags...')
-    commits = await executeCommand({
-      command: `git log ${latestTag}..HEAD --oneline --pretty=format:%H`
+    core.info('Listing git tags in latest release...')
+    commitsInLatestRelease = await executeCommand({
+      command: `git log ${latestTag} --oneline --pretty=format:%H`
     })
-    core.info(`Commits since latest tag (${latestTag}): ${commits.length}`)
-    core.info(`Commits: ${commits.join(', ')}`)
+    core.info(
+      `Commits in latest tag (${latestTag}): ${commitsInLatestRelease.length}`
+    )
+    core.info(`Commits: ${commitsInLatestRelease.join(', ')}`)
   } catch (error) {
     const errMsg = `Failed to list git tags: ${error}`
     throw setFailedAndCreateError(errMsg)
   }
 
-  if (commits.length === 0) {
+  if (commitsInLatestRelease.length === 0) {
+    const errMsg = 'No commits found in the latest tag'
+    throw setFailedAndCreateError(errMsg)
+  }
+
+  const headOfLatestRelease = commitsInLatestRelease[0]
+  core.info(`Head of Latest Release commit: ${headOfLatestRelease}`)
+
+  let commitsSinceLatestRelease: string[] = []
+  try {
+    core.info('Listing git tags since latest release...')
+    commitsSinceLatestRelease = await executeCommand({
+      command: `git log ${latestTag}..HEAD --oneline --pretty=format:%H`
+    })
+    core.info(
+      `Commits since latest tag (${latestTag}): ${commitsSinceLatestRelease.length}`
+    )
+    core.info(`Commits: ${commitsSinceLatestRelease.join(', ')}`)
+  } catch (error) {
+    const errMsg = `Failed to list git tags: ${error}`
+    throw setFailedAndCreateError(errMsg)
+  }
+
+  if (commitsSinceLatestRelease.length === 0) {
     const errMsg = 'No commits found since the latest tag'
     throw setFailedAndCreateError(errMsg)
   }
 
-  const base = commits[commits.length - 1]
-  const head = commits[0]
-  core.info(`Base commit: ${base}`)
-  core.info(`Head commit: ${head}`)
+  const baseSinceLatestRelease =
+    commitsSinceLatestRelease[commitsSinceLatestRelease.length - 1]
+  const headSinceLatestRelease = commitsSinceLatestRelease[0]
+  core.info(`Base commit: ${baseSinceLatestRelease}`)
+  core.info(`Head commit: ${headSinceLatestRelease}`)
 
   // set outputs
   core.setOutput('latestTag', latestTag)
-  core.setOutput('commits', commits.join(', '))
-  core.setOutput('base', base)
-  core.setOutput('head', head)
+  core.setOutput('commitsInLatestRelease', commitsInLatestRelease.join(', '))
+  core.setOutput(
+    'commitsSinceLatestRelease',
+    commitsSinceLatestRelease.join(', ')
+  )
+  core.setOutput('headOfLatestRelease', headOfLatestRelease)
+  core.setOutput('baseSinceLatestRelease', baseSinceLatestRelease)
+  core.setOutput('headSinceLatestRelease', headSinceLatestRelease)
 
+  // return outputs for testing purposes
   return {
     latestTag,
-    commits,
-    base,
-    head
+    commitsInLatestRelease,
+    commitsSinceLatestRelease,
+    headOfLatestRelease,
+    baseSinceLatestRelease,
+    headSinceLatestRelease
   }
 }

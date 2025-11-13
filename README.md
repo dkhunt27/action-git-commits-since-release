@@ -11,10 +11,14 @@ projects. This behavior can be modified using the different inputs (see below).
 
 ```yaml
 ---
-- name: Checkout
-  uses: actions/checkout@v5
+  - name: Checkout code
+    uses: actions/checkout@v5
+    with:
+      fetch-depth: 0 # IMPORTANT!!! make sure we get full git history; necessary for tag/commit commands
 
-- uses: dkhunt27/action-git-commits-since-release@v1
+  - name: Git Commits Since Release
+    id: gitCommitsSinceRelease
+    uses: dkhunt27/action-git-commits-since-release@v1
 ```
 
 ## Test your action locally

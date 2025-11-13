@@ -2,7 +2,7 @@ import { jest } from '@jest/globals'
 import { run } from '../src/main'
 
 // eslint-disable-next-line jest/no-disabled-tests
-describe.skip('main tests', () => {
+describe('main tests', () => {
   beforeEach(() => {
     jest.useFakeTimers()
     jest.setSystemTime(new Date('2024-01-01T12:00:00Z'))
