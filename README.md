@@ -1,24 +1,48 @@
 # Action Git Commits Since Release
 
-This is git action that determines the commits since the last release
+This is git action that determines the commits since the last release. It
+identifies the last commit or the head of the last release, the base since the
+last release, and finally the head since the last release.
+
+So, if there are the following commits which are ordered oldest to newest, the
+headOfLatestRelease
+
+7bd70b4069073cfd557fbf91c7f43e7b74b1b532 // first commit
+bbeda8053547fedc4f8968d10cec7eb0e170727f
+0897759e3024be5c3c3c5cfbfcabd90687dff99a
+91aa6490582ef5ac9125cfaca56c29781237b026 // tag 1.0.0
+ea4ad1ee7fe2133e80efda710eacf464f8a90186
+3ea1b5b1fc5486231f09ffec81c92139c186c559
+d613369f60135172646a288f149490de7a619725 // tag 1.1.0
+9024d7a1490113d97ef977c0f1a3c8e853a0f091
+ecb911adf31d2966b31c89b17a5cda0ccdec3002
+268788fcafda7d68b45697cba8f60e4bd9d05f52 // last commit / current head
+
+the action would output the following: latestTag: 1.1.0 headOfLatestRelease:
+d613369f60135172646a288f149490de7a619725 baseSinceLatestRelease:
+9024d7a1490113d97ef977c0f1a3c8e853a0f091 headSinceLatestRelease:
+268788fcafda7d68b45697cba8f60e4bd9d05f52
 
 ## Usage
-
-By default, the action will try to run the provided tasks only on the affected
-projects. This behavior can be modified using the different inputs (see below).
 
 > workflow.yml
 
 ```yaml
 ---
-  - name: Checkout code
-    uses: actions/checkout@v5
-    with:
-      fetch-depth: 0 # IMPORTANT!!! make sure we get full git history; necessary for tag/commit commands
+- name: Checkout code
+  uses: actions/checkout@v5
+  with:
+    fetch-depth: 0 # IMPORTANT!!! make sure we get full git history; necessary for tag/commit commands
 
-  - name: Git Commits Since Release
-    id: gitCommitsSinceRelease
-    uses: dkhunt27/action-git-commits-since-release@v1
+- name: Git Commits Since Release
+  id: gitCommitsSinceRelease
+  uses: dkhunt27/action-git-commits-since-release@v1
+
+- run: |
+    echo "latestTag: ${{ steps.gitCommitsSinceRelease.outputs.latestTag }}"
+    echo "headOfLatestRelease: ${{ steps.gitCommitsSinceRelease.outputs.headOfLatestRelease }}"
+    echo "baseSinceLatestRelease: ${{ steps.gitCommitsSinceRelease.outputs.baseSinceLatestRelease }}"
+    echo "headSinceLatestRelease: ${{ steps.gitCommitsSinceRelease.outputs.headSinceLatestRelease }}"
 ```
 
 ## Test your action locally

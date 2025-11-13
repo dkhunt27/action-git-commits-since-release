@@ -1,6 +1,8 @@
 export declare const run: () => Promise<{
     latestTag: string;
-    commits: string[];
-    base: string;
-    head: string;
+    commitsInLatestRelease: string[];
+    commitsSinceLatestRelease: string[];
+    headOfLatestRelease: string;
+    baseSinceLatestRelease: string;
+    headSinceLatestRelease: string;
 }>;
