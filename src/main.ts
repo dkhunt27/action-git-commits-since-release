@@ -46,7 +46,8 @@ export const run = async (): Promise<{
   try {
     core.info('Listing git tags in latest release...')
     commitsInLatestRelease = await executeCommand({
-      command: `git log ${latestTag} --oneline --pretty=format:%H`
+      command: `git log ${latestTag} --oneline --pretty=format:%H`,
+      hideOutput: true
     })
 
     first10CommitsInLatestRelease = commitsInLatestRelease.slice(0, 10)
@@ -74,7 +75,8 @@ export const run = async (): Promise<{
   try {
     core.info('Listing git tags since latest release...')
     commitsSinceLatestRelease = await executeCommand({
-      command: `git log ${latestTag}..HEAD --oneline --pretty=format:%H`
+      command: `git log ${latestTag}..HEAD --oneline --pretty=format:%H`,
+      hideOutput: true
     })
     core.info(
       `Commits since latest tag (${latestTag}): ${commitsSinceLatestRelease.length}`

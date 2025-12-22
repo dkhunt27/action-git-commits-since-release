@@ -27259,10 +27259,17 @@ const executeCommand = async (params) => {
     const execToUse = override ?? exec$1;
     return new Promise((resolve, reject) => {
         execToUse(command, (error, stdout, stderr) => {
-            coreExports.info(`stdout::`);
-            coreExports.info(stdout);
-            coreExports.info(`stderr::`);
-            coreExports.info(stderr);
+            if (params.hideOutput) {
+                coreExports.info(`stdout hidden`);
+            }
+            else {
+                coreExports.info(`stdout::`);
+                coreExports.info(stdout);
+            }
+            if (stderr) {
+                coreExports.info(`stderr::`);
+                coreExports.info(stderr);
+            }
             if (error) {
                 coreExports.info(`Command failed`);
                 coreExports.error(error);
@@ -27312,7 +27319,8 @@ const run = async () => {
     try {
         coreExports.info('Listing git tags in latest release...');
         commitsInLatestRelease = await executeCommand({
-            command: `git log ${latestTag} --oneline --pretty=format:%H`
+            command: `git log ${latestTag} --oneline --pretty=format:%H`,
+            hideOutput: true
         });
         first10CommitsInLatestRelease = commitsInLatestRelease.slice(0, 10);
         last10CommitsInLatestRelease = commitsInLatestRelease.slice(-10);
@@ -27334,7 +27342,8 @@ const run = async () => {
     try {
         coreExports.info('Listing git tags since latest release...');
         commitsSinceLatestRelease = await executeCommand({
-            command: `git log ${latestTag}..HEAD --oneline --pretty=format:%H`
+            command: `git log ${latestTag}..HEAD --oneline --pretty=format:%H`,
+            hideOutput: true
         });
         coreExports.info(`Commits since latest tag (${latestTag}): ${commitsSinceLatestRelease.length}`);
         coreExports.info(`Commits: ${commitsSinceLatestRelease.join(', ')}`);

@@ -3,6 +3,7 @@ import * as core from '@actions/core'
 
 export const executeCommand = async (params: {
   command: string
+  hideOutput?: boolean
   override?: typeof exec
 }): Promise<string[]> => {
   const { command, override } = params
@@ -10,11 +11,17 @@ export const executeCommand = async (params: {
 
   return new Promise<string[]>((resolve, reject) => {
     execToUse(command, (error, stdout, stderr) => {
-      core.info(`stdout::`)
-      core.info(stdout)
+      if (params.hideOutput) {
+        core.info(`stdout hidden`)
+      } else {
+        core.info(`stdout::`)
+        core.info(stdout)
+      }
 
-      core.info(`stderr::`)
-      core.info(stderr)
+      if (stderr) {
+        core.info(`stderr::`)
+        core.info(stderr)
+      }
 
       if (error) {
         core.info(`Command failed`)
