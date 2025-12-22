@@ -41,15 +41,22 @@ export const run = async (): Promise<{
   core.info(`Latest tag found: ${latestTag}`)
 
   let commitsInLatestRelease: string[] = []
+  let first10CommitsInLatestRelease: string[] = []
+  let last10CommitsInLatestRelease: string[] = []
   try {
     core.info('Listing git tags in latest release...')
     commitsInLatestRelease = await executeCommand({
       command: `git log ${latestTag} --oneline --pretty=format:%H`
     })
+
+    first10CommitsInLatestRelease = commitsInLatestRelease.slice(0, 10)
+    last10CommitsInLatestRelease = commitsInLatestRelease.slice(-10)
+
     core.info(
-      `Commits in latest tag (${latestTag}): ${commitsInLatestRelease.length}`
+      `Commit count in latest tag (${latestTag}): ${commitsInLatestRelease.length}`
     )
-    core.info(`Commits: ${commitsInLatestRelease.join(', ')}`)
+    core.info(`First 10 Commits: ${first10CommitsInLatestRelease.join(', ')}`)
+    core.info(`Last 10 Commits: ${last10CommitsInLatestRelease.join(', ')}`)
   } catch (error) {
     const errMsg = `Failed to list git tags: ${error}`
     throw setFailedAndCreateError(errMsg)
