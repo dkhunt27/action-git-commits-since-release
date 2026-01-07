@@ -6,6 +6,14 @@ branding:
   icon: command
   color: blue
 
+inputs:
+  baseOverride:
+    description: 'Override for base commit for git boundaries'
+    required: false
+  headOverride:
+    description: 'Override for head commit for git boundaries'
+    required: false
+
 runs:
   using: node24
   main: dist/index.js

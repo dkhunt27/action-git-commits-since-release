@@ -14,6 +14,17 @@ export const run = async (): Promise<{
   baseSinceLatestRelease: string
   headSinceLatestRelease: string
 }> => {
+  let baseOverride: string | undefined
+  let headOverride: string | undefined
+  try {
+    core.info('Parsing inputs...')
+    baseOverride = core.getInput('baseOverride')
+    headOverride = core.getInput('headOverride')
+  } catch (error) {
+    const errMsg = `Action failed with error: ${error}`
+    throw setFailedAndCreateError(errMsg)
+  }
+
   try {
     core.info('Fetching all git tags...')
     await executeCommand({ command: 'git fetch --tags' })
@@ -88,8 +99,15 @@ export const run = async (): Promise<{
   }
 
   if (commitsSinceLatestRelease.length === 0) {
-    const errMsg = 'No commits found since the latest tag'
-    throw setFailedAndCreateError(errMsg)
+    if (baseOverride && headOverride) {
+      core.info(
+        `No commits found since latest tag, but baseOverride and headOverride were provided. Using those values.`
+      )
+      commitsSinceLatestRelease = [headOverride, baseOverride]
+    } else {
+      const errMsg = 'No commits found since the latest tag'
+      throw setFailedAndCreateError(errMsg)
+    }
   }
 
   const baseSinceLatestRelease =
@@ -100,6 +118,8 @@ export const run = async (): Promise<{
 
   // set outputs
   core.setOutput('latestTag', latestTag)
+  core.setOutput('headOverride', headOverride)
+  core.setOutput('baseOverride', baseOverride)
   core.setOutput('commitsInLatestRelease', commitsInLatestRelease.join(', '))
   core.setOutput(
     'commitsSinceLatestRelease',

@@ -27289,6 +27289,17 @@ const setFailedAndCreateError = (message) => {
     return new Error(message);
 };
 const run = async () => {
+    let baseOverride;
+    let headOverride;
+    try {
+        coreExports.info('Parsing inputs...');
+        baseOverride = coreExports.getInput('baseOverride');
+        headOverride = coreExports.getInput('headOverride');
+    }
+    catch (error) {
+        const errMsg = `Action failed with error: ${error}`;
+        throw setFailedAndCreateError(errMsg);
+    }
     try {
         coreExports.info('Fetching all git tags...');
         await executeCommand({ command: 'git fetch --tags' });
@@ -27353,8 +27364,14 @@ const run = async () => {
         throw setFailedAndCreateError(errMsg);
     }
     if (commitsSinceLatestRelease.length === 0) {
-        const errMsg = 'No commits found since the latest tag';
-        throw setFailedAndCreateError(errMsg);
+        if (baseOverride && headOverride) {
+            coreExports.info(`No commits found since latest tag, but baseOverride and headOverride were provided. Using those values.`);
+            commitsSinceLatestRelease = [headOverride, baseOverride];
+        }
+        else {
+            const errMsg = 'No commits found since the latest tag';
+            throw setFailedAndCreateError(errMsg);
+        }
     }
     const baseSinceLatestRelease = commitsSinceLatestRelease[commitsSinceLatestRelease.length - 1];
     const headSinceLatestRelease = commitsSinceLatestRelease[0];
@@ -27362,6 +27379,8 @@ const run = async () => {
     coreExports.info(`Head commit: ${headSinceLatestRelease}`);
     // set outputs
     coreExports.setOutput('latestTag', latestTag);
+    coreExports.setOutput('headOverride', headOverride);
+    coreExports.setOutput('baseOverride', baseOverride);
     coreExports.setOutput('commitsInLatestRelease', commitsInLatestRelease.join(', '));
     coreExports.setOutput('commitsSinceLatestRelease', commitsSinceLatestRelease.join(', '));
     coreExports.setOutput('headOfLatestRelease', headOfLatestRelease);
