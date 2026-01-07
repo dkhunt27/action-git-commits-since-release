@@ -115,11 +115,11 @@ export const run = async (): Promise<{
   const headSinceLatestRelease = commitsSinceLatestRelease[0]
   core.info(`Base commit: ${baseSinceLatestRelease}`)
   core.info(`Head commit: ${headSinceLatestRelease}`)
+  core.info(`Base override: ${baseOverride}`)
+  core.info(`Head override: ${headOverride}`)
 
   // set outputs
   core.setOutput('latestTag', latestTag)
-  core.setOutput('headOverride', headOverride)
-  core.setOutput('baseOverride', baseOverride)
   core.setOutput('commitsInLatestRelease', commitsInLatestRelease.join(', '))
   core.setOutput(
     'commitsSinceLatestRelease',

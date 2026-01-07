@@ -27377,10 +27377,10 @@ const run = async () => {
     const headSinceLatestRelease = commitsSinceLatestRelease[0];
     coreExports.info(`Base commit: ${baseSinceLatestRelease}`);
     coreExports.info(`Head commit: ${headSinceLatestRelease}`);
+    coreExports.info(`Base override: ${baseOverride}`);
+    coreExports.info(`Head override: ${headOverride}`);
     // set outputs
     coreExports.setOutput('latestTag', latestTag);
-    coreExports.setOutput('headOverride', headOverride);
-    coreExports.setOutput('baseOverride', baseOverride);
     coreExports.setOutput('commitsInLatestRelease', commitsInLatestRelease.join(', '));
     coreExports.setOutput('commitsSinceLatestRelease', commitsSinceLatestRelease.join(', '));
     coreExports.setOutput('headOfLatestRelease', headOfLatestRelease);
